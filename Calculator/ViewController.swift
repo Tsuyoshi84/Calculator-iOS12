@@ -11,21 +11,53 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
-    
+    private var isFinishedTypingNumber: Bool = true
+    private var displayValue: Double {
+        get {
+            guard let number = Double(displayLabel.text!) else {
+                fatalError("Cannot convert display text to a double.")
+            }
+            return number
+        }
+        
+        set {
+            displayLabel.text = String(newValue)
+        }
+    }
     
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
+        isFinishedTypingNumber = true
         
-        //What should happen when a non-number button is pressed
-    
+        if let calcMethod = sender.currentTitle {
+            if calcMethod == "+/-" {
+                displayValue = displayValue * -1
+            } else if calcMethod == "AC" {
+                displayValue = 0
+            } else if calcMethod == "%" {
+                displayValue = displayValue / 100
+            }
+        }
     }
-
+    
     
     @IBAction func numButtonPressed(_ sender: UIButton) {
-        
-        //What should happen when a number is entered into the keypad
-    
+        if let numValue = sender.currentTitle {
+            if isFinishedTypingNumber {
+                displayLabel.text = numValue
+                isFinishedTypingNumber = false
+            } else {
+                if numValue == "." {
+                    if floor(displayValue) != displayValue {
+                        return
+                    }
+                }
+                
+                displayLabel.text = displayLabel.text! + numValue
+                
+            }
+        }
     }
-
+    
 }
 
